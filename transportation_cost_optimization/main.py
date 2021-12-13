@@ -12,10 +12,10 @@ x0 = [L, B, D, T, Cb, Vk, DWT]
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html
 result = minimize(
     x0=x0,  # Passing the initial guess vector
-    fun=transportation_cost_function,  # The objective function that will be iterated
-    method="SLSQP",  # Indicating that we want to use the Sequential Least Squares Programming algorithm
-    constraints=build_constraints(),  # Enforcing constraints like "L/B >= 6"
-    bounds=build_bounds()  # Enforcing boundaries like "0 <= L <= 274.32"
+    fun=transportation_cost_function,  # Objective function to be optimized
+    method="SLSQP",  # We are using the Sequential Least Squares Programming algorithm
+    constraints=build_constraints(),  # Sequence of dictionaries defining the constraints
+    bounds=build_bounds()  # Sequence of tuples defining lower and upper bounds for each parameter
 )
 
 # Get the Optimized transportation cost and the changed
