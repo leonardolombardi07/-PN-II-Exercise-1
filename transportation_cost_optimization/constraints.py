@@ -70,6 +70,7 @@ def build_constraints():
         return GMt - 0.07*B
 
     def froude_number_constraint(x):
+        '''froude_number <= 0.32'''
         L, Vk = x[0], x[5]
         froude_number = get_froude_number(Vk, L)
         return 0.32 - froude_number
