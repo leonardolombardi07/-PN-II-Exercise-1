@@ -1,3 +1,8 @@
+
+from formulas import *
+from parameters import round_trip_miles, handling_rate, fuel_price
+
+
 def transportation_cost_function(x):
     '''A function that calculates the transportation cost from a set
     of parameters.
@@ -13,47 +18,41 @@ def transportation_cost_function(x):
     out : float
         The value of the transportation cost calculated from given parameters
     '''
-    L, B, D, T, Cb, Vk, DWT, GMt, froude_number = x
+    L, B, D, T, Cb, Vk, DWT = x
 
     # Power
-    V = 0.5144*Vk
-    displacement = 1.025*L*B*T*Cb
-    a = 4977.06*(Cb ** 2) - 8105.61*Cb + 4456.51
-    b = -10847.2*(Cb ** 2) + 12817*Cb - 6960.32
-    power = (displacement ** (2/3))*(V ** 3) / (a + b*froude_number)
+    displacement = get_displacement(L, B, T, Cb)
+    V, froude_number = get_V(Vk), get_froude_number(Vk, L)
+    power = get_power(Cb, displacement, V, froude_number)
 
     # Weights
-    steel_weight = 0.034*(L**1.7)*(B**0.7)*(D**0.4)*(Cb**0.5)
-    outfit_weight = (L ** 0.8)*(B ** 0.6)*(D ** 0.3)*(Cb ** 0.1)
+    steel_weight = get_steel_weight(L, B, D, Cb)
+    outfit_weight = get_outfit_weight(L, B, D, Cb)
 
     # We commented the lines containing the variables below because, although
     # they were mentioned in problem assignment, they are not used in our program.
-    # machinery_weight = 0.17*(power ** 0.9)
-    # ligthship_weight = steel_weight + outfit_weight + machinery_weight
+    # machinery_weight = get_machinery_weight(power)
+    # ligthship_weight = get_lightship_weight(
+    #     steel_weight, outfit_weight, machinery_weight)
 
     # General (TODO: give a better name for this category of calculations)
-    round_trip_miles = 5000
-    sea_days = round_trip_miles/(24*Vk)
-    daily_consumption = 0.19*power*24/1000 + 0.2
-    fuel_carried = daily_consumption*(sea_days+5)
-    miscellaneous_DWT = 2*(DWT ** 0.5)
-    cargo_DWT = DWT-fuel_carried-miscellaneous_DWT
-    handling_rate = 8000
-    port_days = 2*((cargo_DWT/handling_rate)+0.5)
-    round_trips_per_year = 350/(sea_days+port_days)
+    sea_days = get_sea_days(round_trip_miles, Vk)
+    daily_consumption = get_daily_consumption(power)
+    fuel_carried = get_fuel_carried(daily_consumption, sea_days)
+    miscellaneous_DWT = get_miscellaneous_DWT(DWT)
+    cargo_DWT = get_cargo_DWT(DWT, fuel_carried, miscellaneous_DWT)
+
+    port_days = get_port_days(cargo_DWT, handling_rate)
+    round_trips_per_year = get_round_trips_per_year(sea_days, port_days)
 
     # Costs
-    port_cost = 6.3*(DWT ** 0.8)
-    fuel_price = 100
-    fuel_cost = 1.05*daily_consumption*sea_days*fuel_price
-    voyage_costs = (fuel_cost+port_cost)*round_trips_per_year
-    running_cost = 40000*(DWT ** 0.3)
-    ship_cost = 1.3*(2000*steel_weight + 3500 *
-                     outfit_weight + 2400*(power ** 0.8))
-    capital_costs = 0.2*ship_cost
+    port_cost = get_port_cost(DWT)
+    fuel_cost = get_fuel_cost(daily_consumption, sea_days, fuel_price)
+    voyage_costs = get_voyage_costs(fuel_cost, port_cost, round_trips_per_year)
+    running_cost = get_running_cost(DWT)
+    ship_cost = get_ship_cost(steel_weight, outfit_weight, power)
+    capital_costs = get_capital_costs(ship_cost)
+    annual_cost = get_annual_cost(capital_costs, running_cost, voyage_costs)
+    annual_cargo = get_annual_cargo(cargo_DWT, round_trips_per_year)
 
-    annual_cost = capital_costs + running_cost + voyage_costs
-    annual_cargo = cargo_DWT*round_trips_per_year
-
-    transportation_cost = annual_cost/annual_cargo
-    return transportation_cost
+    return get_transportation_cost(annual_cost, annual_cargo)

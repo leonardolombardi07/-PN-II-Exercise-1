@@ -23,8 +23,5 @@ def build_bounds():
     Cb_bound = (0.63, 0.75)
     Vk_bound = (14, 18)
     DWT_bound = (25000, 500000)
-    GMt_bound = (None, None)
-    froude_number_bound = (0, 0.32)
-    return (L_bound, B_bound, D_bound,
-            T_bound, Cb_bound, Vk_bound,
-            DWT_bound, GMt_bound, froude_number_bound)
+    return (L_bound, B_bound, D_bound, T_bound,
+            Cb_bound, Vk_bound, DWT_bound)

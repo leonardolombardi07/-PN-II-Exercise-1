@@ -1,3 +1,6 @@
+from formulas import *
+
+
 def build_constraints():
     '''A function that builds constraints relating two or more parameters
     defined for the optimization problem.
@@ -10,13 +13,13 @@ def build_constraints():
         and containing the keys "type" and "fun".
 
         "type" : {"eq", "ineq"}
-            Determines if it is an equality or inequality constraint 
+            Determines if it is an equality or inequality constraint
 
         "fun" : callable
             The function defining the constraint. It receives a vector x with
             all parameters (in the order as defined by the initial guess, x0).
             Equality constraint means that the constraint function result is to
-            be zero (fun(x) == 0) whereas inequality means that it is to be 
+            be zero (fun(x) == 0) whereas inequality means that it is to be
             non-negative (f(x) >= 0).
 
     See Also
@@ -25,7 +28,7 @@ def build_constraints():
 
     Notes
     -----
-    Constraints typically don't need a builder function like this and are 
+    Constraints typically don't need a builder function like this and are
     more succinctly defined with "func" being a lambda function. The decision to
     create the build_constraints function was to try to make it easier to understand
     how constraints are defined in Scipy and to clarify where each constraint of the
@@ -57,10 +60,19 @@ def build_constraints():
         D, T = x[2], x[3]
         return 0.7*D + 0.7 - T
 
-    def stability_condition(x):
+    def stability_constraint(x):
         '''GMt >= 0.07B'''
-        B, GMt = x[1], x[7]
+        B, D, T, Cb = x[1], x[2], x[3], x[4]
+        KB = get_KB(T)
+        BMt = get_BMt(Cb, B, T)
+        KG = get_KG(D)
+        GMt = get_GMt(KB, BMt, KG)
         return GMt - 0.07*B
+
+    def froude_number_constraint(x):
+        L, Vk = x[0], x[5]
+        froude_number = get_froude_number(Vk, L)
+        return 0.32 - froude_number
 
     return (
         {'type': 'ineq', 'fun': L_and_B},
@@ -68,5 +80,6 @@ def build_constraints():
         {'type': 'ineq', 'fun': L_and_T},
         {'type': 'ineq', 'fun': T_and_DWT},
         {'type': 'ineq', 'fun': T_and_D},
-        {'type': 'ineq', 'fun': stability_condition},
+        {'type': 'ineq', 'fun': stability_constraint},
+        {'type': 'ineq', 'fun': froude_number_constraint},
     )
