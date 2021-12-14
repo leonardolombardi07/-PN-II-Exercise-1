@@ -18,7 +18,7 @@ def transportation_cost_function(x):
     out : float
         The value of the transportation cost calculated from given parameters
     '''
-    L, B, D, T, Cb, Vk, DWT = x
+    L, B, D, T, Cb, Vk = x
 
     # Power
     displacement = get_displacement(L, B, T, Cb)
@@ -29,13 +29,8 @@ def transportation_cost_function(x):
     steel_weight = get_steel_weight(L, B, D, Cb)
     outfit_weight = get_outfit_weight(L, B, D, Cb)
 
-    # We commented the lines containing the variables below because, although
-    # they were mentioned in problem assignment, they are not used in our program.
-    # machinery_weight = get_machinery_weight(power)
-    # ligthship_weight = get_lightship_weight(
-    #     steel_weight, outfit_weight, machinery_weight)
-
     # General (TODO: give a better name for this category of calculations)
+    DWT = get_DWT(L, B, T, D, Cb, Vk)
     sea_days = get_sea_days(round_trip_miles, Vk)
     daily_consumption = get_daily_consumption(power)
     fuel_carried = get_fuel_carried(daily_consumption, sea_days)

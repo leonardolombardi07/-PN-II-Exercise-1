@@ -8,6 +8,17 @@ from constants import p, g
 # than one place.
 ##############################################################################
 
+def get_DWT(L, B, T, D, Cb, Vk):
+    displacement = get_displacement(L, B, T, Cb)
+    V, froude_number = get_V(Vk), get_froude_number(Vk, L)
+    power = get_power(Cb, displacement, V, froude_number)
+    lightship_weight = get_lightship_weight(
+        get_steel_weight(L, B, D, Cb),
+        get_outfit_weight(L, B, D, Cb),
+        get_machinery_weight(power)
+    )
+    return displacement - lightship_weight
+
 
 def get_V(Vk):
     return 0.5144*Vk

@@ -22,7 +22,6 @@ def build_bounds():
     T_bound = (0, None)
     Cb_bound = (0.63, 0.75)
     Vk_bound = (14, 18)
-    DWT_bound = (25000, 500000)
     return (
         L_bound,
         B_bound,
@@ -30,5 +29,4 @@ def build_bounds():
         T_bound,
         Cb_bound,
         Vk_bound,
-        DWT_bound
     )

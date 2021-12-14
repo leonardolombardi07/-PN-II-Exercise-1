@@ -3,7 +3,7 @@ from formulas import *
 
 def build_constraints():
     '''A function that builds constraints relating two or more parameters
-    defined for the optimization problem.
+    or bounds that need to be calculated from the set of parameters (x0 or x)
 
 
     Returns
@@ -34,31 +34,43 @@ def build_constraints():
     how constraints are defined in Scipy and to clarify where each constraint of the
     problem was defined.
     '''
+    def DWT_lower_bound(x):
+        ''' DWT >= 500000'''
+        L, B, D, T, Cb, Vk = x[0], x[1], x[2], x[3], x[4], x[5]
+        DWT = get_DWT(L, B, D, T, Cb, Vk)
+        return DWT - 25000  # >= 0
+
+    def DWT_upper_bound(x):
+        ''' DWT <= 500000'''
+        L, B, D, T, Cb, Vk = x[0], x[1], x[2], x[3], x[4], x[5]
+        DWT = get_DWT(L, B, D, T, Cb, Vk)
+        return 500000 - DWT  # >= 0
 
     def L_and_B(x):
         '''L/B >= 6'''
         L, B = x[0], x[1]
-        return L/B - 6
+        return L/B - 6  # >= 0
 
     def L_and_D(x):
         '''L/D  <= 15'''
         L, D = x[0], x[2]
-        return 15 - L/D
+        return 15 - L/D  # >= 0
 
     def L_and_T(x):
         '''L/T <= 19'''
         L, T = x[0], x[3]
-        return 19 - L/T
+        return 19 - L/T  # >= 0
 
     def T_and_DWT(x):
         '''T <= 0.45DWT^0,31'''
-        T, DWT = x[3], x[6]
-        return 0.45*(DWT**0.32) - T
+        L, B, D, T, Cb, Vk = x[0], x[1], x[2], x[3], x[4], x[5]
+        DWT = get_DWT(L, B, T, D, Cb, Vk)
+        return 0.45*(DWT**0.32) - T  # >= 0
 
     def T_and_D(x):
         '''T <= 0.7D + 0.7'''
         D, T = x[2], x[3]
-        return 0.7*D + 0.7 - T
+        return 0.7*D + 0.7 - T  # >= 0
 
     def stability_constraint(x):
         '''GMt >= 0.07B'''
@@ -67,15 +79,17 @@ def build_constraints():
         BMt = get_BMt(Cb, B, T)
         KG = get_KG(D)
         GMt = get_GMt(KB, BMt, KG)
-        return GMt - 0.07*B
+        return GMt - 0.07*B  # >= 0
 
     def froude_number_constraint(x):
         '''froude_number <= 0.32'''
         L, Vk = x[0], x[5]
         froude_number = get_froude_number(Vk, L)
-        return 0.32 - froude_number
+        return 0.32 - froude_number  # >= 0
 
     return (
+        {'type': 'ineq', 'fun': DWT_lower_bound},
+        {'type': 'ineq', 'fun': DWT_upper_bound},
         {'type': 'ineq', 'fun': L_and_B},
         {'type': 'ineq', 'fun': L_and_D},
         {'type': 'ineq', 'fun': L_and_T},

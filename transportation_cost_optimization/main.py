@@ -6,7 +6,7 @@ from constraints import build_constraints
 
 
 # x0 is the initial guess vector containing ship parameters
-x0 = [L, B, D, T, Cb, Vk, DWT]
+x0 = [L, B, D, T, Cb, Vk]
 
 # We then apply the optimization by calling the minimize function. See:
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html
@@ -23,7 +23,7 @@ result = minimize(
 # Get the Optimized transportation cost and the changed
 # ship parameters as result of the optimization
 optimized_transportation_cost = result.fun
-L, B, D, T, Cb, Vk, DWT = result.x
+L, B, D, T, Cb, Vk = result.x
 
 
 # And finnally print the obtained values
@@ -34,4 +34,3 @@ print(f"Depth (D) after optimization: {D}")
 print(f"Draught (T) after optimization: {T}")
 print(f"Block Coefficient (Cb) after optimization: {Cb}")
 print(f"Speed (Vk) after optimization: {Vk}")
-print(f"Deadweigth (DWT) after optimization: {DWT}")
