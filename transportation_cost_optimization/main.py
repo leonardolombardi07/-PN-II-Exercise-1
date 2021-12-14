@@ -27,10 +27,11 @@ L, B, D, T, Cb, Vk = result.x
 
 
 # And finnally print the obtained values
-print(f"Optimized transportation cost: {optimized_transportation_cost} \n")
-print(f"Length (L) after optimization: {L}")
-print(f"Breadth (B) after optimization: {B}")
-print(f"Depth (D) after optimization: {D}")
-print(f"Draught (T) after optimization: {T}")
+print(
+    f"Optimized transportation cost: {optimized_transportation_cost} [US$/ton] \n")
+print(f"Length (L) after optimization: {L} [m]")
+print(f"Breadth (B) after optimization: {B} [m]")
+print(f"Depth (D) after optimization: {D} [m]")
+print(f"Draught (T) after optimization: {T} [m]")
 print(f"Block Coefficient (Cb) after optimization: {Cb}")
-print(f"Speed (Vk) after optimization: {Vk}")
+print(f"Speed in knots (Vk) after optimization: {Vk} [kn]")
