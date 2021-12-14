@@ -53,7 +53,7 @@ def build_constraints():
     def T_and_DWT(x):
         '''T <= 0.45DWT^0,31'''
         T, DWT = x[3], x[6]
-        return 0.45*DWT*(DWT**0.32) - T
+        return 0.45*(DWT**0.32) - T
 
     def T_and_D(x):
         '''T <= 0.7D + 0.7'''
