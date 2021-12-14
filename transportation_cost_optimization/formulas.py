@@ -8,6 +8,8 @@ from constants import p, g
 # than one place.
 ##############################################################################
 
+# TODO: Put all functions with the fundamental ship parameters as only arguments
+
 def get_DWT(L, B, T, D, Cb, Vk):
     displacement = get_displacement(L, B, T, Cb)
     V, froude_number = get_V(Vk), get_froude_number(Vk, L)
